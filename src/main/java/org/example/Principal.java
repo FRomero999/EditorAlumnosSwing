@@ -45,19 +45,30 @@ public class Principal extends javax.swing.JFrame {
         lista.addListSelectionListener(e -> {
             int indice = lista.getSelectedIndex();
             if(!lista.getValueIsAdjusting() && indice>=0 ){
-                String alumno = lista.getSelectedValue();
-                listaModel.remove(indice);
-                info.setText("Alumno eliminado: "+alumno);
 
-                var contenido = new ArrayList<String>();
-                for(int i=0; i<listaModel.size(); i++) contenido.add(listaModel.get(i));
+                ContextService.getInstance().setData("alumno",lista.getSelectedValue());
+                ContextService.getInstance().setData("alumno_id",indice);
 
-                Boolean result = dataService.guardarDatos(contenido);
-                if(!result){
-                    info.setText("Error al escribir el archivo");
-                }
+                var dialogo = new Info(this);
+                dialogo.setVisible(true);
+
             }
         });
+    }
+
+    public void removeItem(Integer indice){
+
+        var alumno = listaModel.get(indice);
+        listaModel.remove(indice);
+        info.setText("Alumno eliminado: "+alumno);
+
+        var contenido = new ArrayList<String>();
+        for(int i=0; i<listaModel.size(); i++) contenido.add(listaModel.get(i));
+
+        Boolean result = dataService.guardarDatos(contenido);
+        if(!result){
+            info.setText("Error al escribir el archivo");
+        }
     }
 
     public void start(Boolean b){
